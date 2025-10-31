@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeartBook 💖</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            background-color: #f5f9ff;
+        }
+
+        /* --- Logo HeartBook --- */
+        .logo {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 48px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #0078d7, #ff4e8a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+            letter-spacing: 2px;
+            animation: fadeIn 1.2s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- Menu --- */
+        nav {
+            background-color: #0078d7;
+            padding: 12px 0;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 20px;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        /* --- Nút đăng nhập --- */
+        .admin-controls {
+            text-align: center;
+            margin: 15px;
+        }
+
+        .admin-controls button {
+            background-color: #0078d7;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: 0.3s;
+        }
+
+        .admin-controls button:hover {
+            background-color: #005fa3;
+        }
+
+        /* --- Các trang --- */
+        section {
+            display: none;
+            animation: fade 0.5s ease;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        @keyframes fade {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- Ô đăng bài --- */
+        .post-box {
+            background: #e9f2ff;
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 6px;
+            border: 1px solid #0078d7;
+            font-size: 16px;
+        }
+
+        /* --- Bài viết --- */
+        .post {
+            width: 80%;
+            background: #f0f6ff;
+            margin: 20px auto;
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .post h3 {
+            color: #005fa3;
+            margin-bottom: 8px;
+        }
+
+        .post-content {
+            overflow: hidden;
+            max-height: 150px;
+            transition: max-height 0.3s ease;
+            white-space: pre-line;
+        }
+
+        .post.expanded .post-content {
+            max-height: none;
+        }
+
+        /* --- Nút ghim --- */
+        #backToTop {
+            display: none;
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+            font-size: 22px;
+            border: none;
+            background-color: #0078d7;
+            color: white;
+            cursor: pointer;
+            padding: 12px 16px;
+            border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: 0.3s;
+        }
+
+        #backToTop:hover {
+            background-color: #005fa3;
+            transform: scale(1.1);
+        }
+
+        /* --- Sách nổi bật --- */
+        .book-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .book-card img {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .book-card h3 {
+            color: #005fa3;
+            font-size: 18px;
+            margin: 5px 0;
+        }
+
+        .book-card button {
+            background-color: #ff4e8a;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .book-card button:hover {
+            background-color: #e13c75;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Logo -->
+    <div class="logo">HeartBook 💖</div>
+
+    <!-- Menu -->
+    <nav>
+        <a href="#" onclick="showPage('home')">Trang chủ</a>
+        <a href="#" onclick="showPage('books')">Sách nổi bật</a>
+        <a href="#" onclick="showPage('about')">Giới thiệu</a>
+        <a href="#" onclick="showPage('contact')">Liên hệ</a>
+    </nav>
+
+    <!-- 🔑 Đăng nhập -->
+    <div class="admin-controls">
+        <button id="loginBtn" onclick="loginAdmin()">🔑 Đăng nhập quản trị</button>
+        <button id="logoutBtn" onclick="logoutAdmin()" style="display:none;">🚪 Đăng xuất</button>
+    </div>
+
+    <!-- 🏠 Trang chủ -->
+    <section id="home" class="active">
+        <div class="post-box" id="newPostBox" style="display:none;">
+            <h2>📝 Đăng bài mới</h2>
+            <input type="text" id="title" placeholder="Tiêu đề bài viết">
+            <textarea id="content" rows="5" placeholder="Nội dung bài viết..."></textarea>
+            <button onclick="addPost()">Đăng bài</button>
+        </div>
+        <div id="posts"></div>
+    </section>
+
+    <!-- 📚 Sách nổi bật -->
+    <section id="books">
+        <h2 style="text-align:center;color:#005fa3;">📚 Sách nổi bật</h2>
+
+        <!-- Ô đăng sách mới -->
+        <div id="newBookBox"
+            style="display:none; width:80%; margin:20px auto; background:#e9f2ff; padding:20px; border-radius:10px;">
+            <h3>➕ Thêm sách nổi bật</h3>
+            <input type="text" id="bookTitle" placeholder="Tên sách...">
+            <input type="text" id="bookImg" placeholder="Đường dẫn hình ảnh (URL)...">
+            <button onclick="addBook()">Đăng sách</button>
+        </div>
+
+        <!-- Ô tìm kiếm -->
+        <div style="text-align:center;margin:15px;">
+            <input type="text" id="searchBook" placeholder="🔍 Nhập tên sách cần tìm..."
+                style="padding:10px;width:60%;max-width:400px;border-radius:8px;border:1px solid #0078d7;"
+                onkeyup="searchBooks()">
+        </div>
+
+        <!-- Danh sách sách -->
+        <div id="bookList"
+            style="width:80%;margin:auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;">
+        </div>
+    </section>
+
+    <!-- ℹ️ Giới thiệu -->
+    <section id="about">
+        <h2 style="text-align:center;color:#005fa3;">Về HeartBook</h2>
+        <p style="width:80%;margin:auto;font-size:17px;line-height:1.6;text-align:justify;">
+            HeartBook là nơi kết nối những người yêu sách. Chúng tôi mang đến không gian chia sẻ, giới thiệu và lan tỏa
+            giá trị từ những cuốn sách hay – giúp mỗi ngày của bạn thêm ý nghĩa và tràn đầy cảm hứng.
+        </p>
+    </section>
+
+    <!-- 💌 Liên hệ -->
+    <section id="contact">
+        <h2 style="text-align:center;color:#005fa3;">Liên hệ</h2>
+        <form style="width:80%;margin:auto;display:flex;flex-direction:column;gap:10px;">
+            <input type="text" placeholder="Họ và tên" required>
+            <input type="email" placeholder="Email" required>
+            <textarea rows="4" placeholder="Lời nhắn..." required></textarea>
+            <button type="submit">Gửi</button>
+        </form>
+    </section>
+
+    <!-- 📌 Nút quay về đầu -->
+    <button id="backToTop" title="Lên đầu trang">📌</button>
+
+    <script>
+        // ====== NAVIGATION ======
+        function showPage(pageId) {
+            document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
+            document.getElementById(pageId).classList.add("active");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        // ====== ADMIN & BÀI VIẾT ======
+        const postsContainer = document.getElementById("posts");
+        const ADMIN_CODE = "heart123";
+        let isAdmin = false;
+        let posts = JSON.parse(localStorage.getItem("posts") || "[]");
+        renderPosts();
+
+        function addPost() {
+            const title = document.getElementById("title").value.trim();
+            const content = document.getElementById("content").value.trim();
+            if (!title || !content) return alert("Vui lòng nhập đầy đủ nội dung!");
+            const post = { id: Date.now(), title, content, date: new Date().toLocaleString() };
+            posts.unshift(post);
+            localStorage.setItem("posts", JSON.stringify(posts));
+            renderPosts();
+            document.getElementById("title").value = "";
+            document.getElementById("content").value = "";
+        }
+
+        function renderPosts() {
+            postsContainer.innerHTML = "";
+            posts.forEach(post => {
+                const div = document.createElement("div");
+                div.className = "post";
+                div.innerHTML = `
+          <h3>${post.title}</h3>
+          <div class="post-content">${post.content}</div>
+          <small>🗓 Ngày đăng: ${post.date}</small>
+          <div class="actions">
+            <button onclick="togglePost(this)">Xem thêm</button>
+            ${isAdmin ? `<button onclick="deletePost(${post.id})">🗑 Xóa</button>` : ""}
+          </div>`;
+                postsContainer.appendChild(div);
+            });
+        }
+
+        function togglePost(btn) {
+            const post = btn.closest(".post");
+            post.classList.toggle("expanded");
+            btn.textContent = post.classList.contains("expanded") ? "Thu gọn" : "Xem thêm";
+        }
+
+        function deletePost(id) {
+            if (!confirm("Bạn có chắc muốn xóa bài này?")) return;
+            posts = posts.filter(p => p.id !== id);
+            localStorage.setItem("posts", JSON.stringify(posts));
+            renderPosts();
+        }
+
+        function loginAdmin() {
+            const code = prompt("🔐 Nhập mã quản trị:");
+            if (code === ADMIN_CODE) {
+                isAdmin = true;
+                document.getElementById("newPostBox").style.display = "block";
+                document.getElementById("newBookBox").style.display = "block";
+                document.getElementById("loginBtn").style.display = "none";
+                document.getElementById("logoutBtn").style.display = "inline-block";
+                alert("✅ Đăng nhập thành công!");
+                renderPosts();
+                renderBooks();
+            } else alert("❌ Sai mã quản trị!");
+        }
+
+        function logoutAdmin() {
+            isAdmin = false;
+            document.getElementById("newPostBox").style.display = "none";
+            document.getElementById("newBookBox").style.display = "none";
+            document.getElementById("loginBtn").style.display = "inline-block";
+            document.getElementById("logoutBtn").style.display = "none";
+            renderPosts();
+            renderBooks();
+            alert("🚪 Đã đăng xuất!");
+        }
+
+        // ====== GHIM LÊN ĐẦU ======
+        const backToTop = document.getElementById("backToTop");
+        window.addEventListener("scroll", () => {
+            backToTop.style.display = window.scrollY > 200 ? "block" : "none";
+        });
+        backToTop.addEventListener("click", () => {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+
+        // ====== SÁCH NỔI BẬT ======
+        let books = JSON.parse(localStorage.getItem("books") || JSON.stringify([
+            { title: "Đi tìm lẽ sống", img: "https://picsum.photos/400/225?random=1" },
+            { title: "Nhà giả kim", img: "https://picsum.photos/400/225?random=2" },
+            { title: "Tuổi trẻ đáng giá bao nhiêu", img: "https://picsum.photos/400/225?random=3" },
+            { title: "Đắc nhân tâm", img: "https://picsum.photos/400/225?random=4" },
+            { title: "Tôi tài giỏi, bạn cũng thế!", img: "https://picsum.photos/400/225?random=5" },
+            { title: "Không gia đình", img: "https://picsum.photos/400/225?random=6" },
+            { title: "Mắt biếc", img: "https://picsum.photos/400/225?random=7" }
+        ]));
+
+        const bookList = document.getElementById("bookList");
+
+        function renderBooks(list = books) {
+            bookList.innerHTML = list.map((b, i) => `
+        <div class="book-card">
+          <img src="${b.img}" alt="${b.title}">
+          <h3>${b.title}</h3>
+          ${isAdmin ? `<button onclick="deleteBook(${i})">🗑 Xóa</button>` : ""}
+        </div>`).join("");
+        }
+
+        function addBook() {
+            const title = document.getElementById("bookTitle").value.trim();
+            const img = document.getElementById("bookImg").value.trim();
+            if (!title || !img) return alert("Vui lòng nhập đầy đủ thông tin sách!");
+            books.unshift({ title, img });
+            localStorage.setItem("books", JSON.stringify(books));
+            renderBooks();
+            document.getElementById("bookTitle").value = "";
+            document.getElementById("bookImg").value = "";
+        }
+
+        function deleteBook(index) {
+            if (!confirm("Bạn có chắc muốn xóa sách này?")) return;
+            books.splice(index, 1);
+            localStorage.setItem("books", JSON.stringify(books));
+            renderBooks();
+        }
+
+        function searchBooks() {
+            const query = document.getElementById("searchBook").value.toLowerCase();
+            const filtered = books.filter(b => b.title.toLowerCase().includes(query));
+            renderBooks(filtered);
+        }
+
+        renderBooks();
+    </script>
+</body>
+
+</html>
